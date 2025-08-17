@@ -347,14 +347,163 @@ ai:
     enabled: true
 ```
 
+## How to Access Swagger UI
+
+Once the application is running, you can access the interactive API documentation at:
+
+**Swagger UI**: http://localhost:8081/swagger-ui.html
+**OpenAPI Spec**: http://localhost:8081/api-docs
+
+The Swagger UI provides:
+- Interactive API testing for all 8 endpoints
+- Complete request/response examples with realistic data
+- Schema documentation for all DTOs and entities
+- Error response examples and status codes
+- AI-specific examples showing fraud scores and validation hints
+
+## API Endpoints with Examples
+
+### Traditional Claim Management
+
+#### Health Check
+```bash
+curl -X GET http://localhost:8081/health
+# Response: "SmartClaims360 API is running"
+```
+
+#### Create Claim
+```bash
+curl -X POST http://localhost:8081/claims \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "John Doe",
+    "claimAmount": 1500.00,
+    "claimType": "AUTO"
+  }'
+
+# Example Response:
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "claimantName": "John Doe",
+#   "claimAmount": 1500.00,
+#   "claimType": "AUTO",
+#   "status": "NEW",
+#   "createdAt": "2025-08-17T14:30:00",
+#   "fraudScore": null
+# }
+```
+
+#### Get All Claims
+```bash
+curl -X GET http://localhost:8081/claims
+
+# Example Response:
+# [
+#   {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "claimantName": "John Doe",
+#     "claimAmount": 1500.00,
+#     "claimType": "AUTO",
+#     "status": "NEW",
+#     "createdAt": "2025-08-17T14:30:00",
+#     "fraudScore": 0.25
+#   }
+# ]
+```
+
+#### Get Claim by ID
+```bash
+curl -X GET http://localhost:8081/claims/{claim-id}
+
+# Example Response: Same as individual claim object above
+```
+
+### AI-Assisted Features
+
+#### Validate Claim
+```bash
+curl -X POST http://localhost:8081/claims/validate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "John Doe",
+    "claimAmount": 1500.00,
+    "claimType": "AUTO"
+  }'
+
+# Example Response:
+# {
+#   "valid": true,
+#   "reasons": [],
+#   "llmHints": [
+#     "Consider adding additional documentation for faster processing",
+#     "Claim amount is within normal range for AUTO claims"
+#   ]
+# }
+```
+
+#### Score Claim for Fraud
+```bash
+curl -X POST http://localhost:8081/claims/score \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "John Doe",
+    "claimAmount": 15000.00,
+    "claimType": "AUTO"
+  }'
+
+# Example Response:
+# {
+#   "fraudScore": 0.75,
+#   "riskLevel": "HIGH",
+#   "explanation": "Claim amount significantly above average (z-score: 2.8). Requires manual review."
+# }
+```
+
+#### Get Claim Summary
+```bash
+curl -X GET http://localhost:8081/claims/{claim-id}/summary
+
+# Example Response:
+# CLAIM SUMMARY
+# =============
+# Claim ID: 123e4567-e89b-12d3-a456-426614174000
+# Claimant: John Doe
+# Amount: $1,500.00
+# Type: AUTO
+# Status: NEW
+# Created: 2025-08-17T14:30:00
+# 
+# VALIDATION STATUS
+# ================
+# Status: VALID
+# AI Recommendations: Consider adding additional documentation
+# 
+# FRAUD RISK ANALYSIS
+# ==================
+# Fraud Score: 0.25 (LOW RISK)
+# Risk Analysis: Claim amount within normal range
+```
+
+#### Get Routing Suggestion
+```bash
+curl -X GET http://localhost:8081/claims/{claim-id}/route
+
+# Example Response:
+# {
+#   "queue": "AUTO",
+#   "reason": "Standard AUTO claim with low fraud risk (0.25). Route to automated processing."
+# }
+```
+
 ### Development
 
 The application uses:
-- **Spring Boot 3.1.2** with Java 17
-- **Gradle** for build management
+- **Spring Boot 3.5.4** with Java 17
+- **Gradle 8.14.3** for build management
 - **H2 Database** for development (in-memory)
 - **Spring Data JPA** for data persistence
 - **Lombok** for reducing boilerplate code
+- **Swagger/OpenAPI 3** for comprehensive API documentation
 
 ### AI Features
 
