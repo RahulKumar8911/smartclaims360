@@ -45,4 +45,7 @@ public class Claim {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(precision = 3, scale = 2)
+    private BigDecimal fraudScore;
+
 }
