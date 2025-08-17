@@ -112,11 +112,112 @@
 
 ### Available Endpoints
 
+#### Health Check
 - **Health Check:** `GET /health` - Returns application status
+
+#### Claims API
+- **Create Claim:** `POST /claims` - Create a new claim
+- **Get All Claims:** `GET /claims` - Retrieve all claims
+- **Get Claim by ID:** `GET /claims/{id}` - Retrieve a specific claim by UUID
+
+#### Database Console
 - **H2 Console:** `http://localhost:8081/h2-console` - Database management interface
   - JDBC URL: `jdbc:h2:mem:testdb`
   - Username: `sa`
   - Password: `password`
+
+### API Usage Examples
+
+#### Create a new claim:
+```bash
+curl -X POST http://localhost:8081/claims \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "John Doe",
+    "claimAmount": 1500.00,
+    "claimType": "AUTO"
+  }'
+```
+
+Expected response (201 Created):
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "claimantName": "John Doe",
+  "claimAmount": 1500.00,
+  "claimType": "AUTO",
+  "status": "NEW",
+  "createdAt": "2025-08-17T13:21:00"
+}
+```
+
+#### Get all claims:
+```bash
+curl http://localhost:8081/claims
+```
+
+Expected response (200 OK):
+```json
+[
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "claimantName": "John Doe",
+    "claimAmount": 1500.00,
+    "claimType": "AUTO",
+    "status": "NEW",
+    "createdAt": "2025-08-17T13:21:00"
+  }
+]
+```
+
+#### Get claim by ID:
+```bash
+curl http://localhost:8081/claims/123e4567-e89b-12d3-a456-426614174000
+```
+
+Expected response (200 OK):
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "claimantName": "John Doe",
+  "claimAmount": 1500.00,
+  "claimType": "AUTO",
+  "status": "NEW",
+  "createdAt": "2025-08-17T13:21:00"
+}
+```
+
+#### Validation Examples
+
+Invalid request (blank claimant name):
+```bash
+curl -X POST http://localhost:8081/claims \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "",
+    "claimAmount": 1500.00,
+    "claimType": "AUTO"
+  }'
+```
+Response: 400 Bad Request with validation errors
+
+Invalid request (negative amount):
+```bash
+curl -X POST http://localhost:8081/claims \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "John Doe",
+    "claimAmount": -100.00,
+    "claimType": "AUTO"
+  }'
+```
+Response: 400 Bad Request with validation errors
+
+Claim not found:
+```bash
+curl http://localhost:8081/claims/00000000-0000-0000-0000-000000000000
+```
+Response: 404 Not Found with message "Claim not found with id: 00000000-0000-0000-0000-000000000000"
 
 ### Development
 
