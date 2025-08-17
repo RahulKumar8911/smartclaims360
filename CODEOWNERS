@@ -1,0 +1,9 @@
+# Global ownership
+* @RahulKumar8911
+
+# Specific areas
+/src/main/java/com/smartclaims360/smartclaims360/ai/ @RahulKumar8911
+/docs/ @RahulKumar8911
+/.github/ @RahulKumar8911
+/build.gradle @RahulKumar8911
+/gradle/ @RahulKumar8911
