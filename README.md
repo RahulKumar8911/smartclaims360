@@ -120,6 +120,12 @@
 - **Get All Claims:** `GET /claims` - Retrieve all claims
 - **Get Claim by ID:** `GET /claims/{id}` - Retrieve a specific claim by UUID
 
+#### AI-Assisted Features
+- **Validate Claim:** `POST /claims/validate` - Validate claim with AI assistance
+- **Score Claim:** `POST /claims/score` - Get fraud risk score for claim
+- **Claim Summary:** `GET /claims/{id}/summary` - Get comprehensive claim summary
+- **Routing Suggestion:** `GET /claims/{id}/route` - Get processing queue suggestion
+
 #### Database Console
 - **H2 Console:** `http://localhost:8081/h2-console` - Database management interface
   - JDBC URL: `jdbc:h2:mem:testdb`
@@ -219,6 +225,128 @@ curl http://localhost:8081/claims/00000000-0000-0000-0000-000000000000
 ```
 Response: 404 Not Found with message "Claim not found with id: 00000000-0000-0000-0000-000000000000"
 
+### AI Features API Examples
+
+#### Validate a claim:
+```bash
+curl -X POST http://localhost:8081/claims/validate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "John Doe",
+    "claimAmount": 15000.00,
+    "claimType": "AUTO"
+  }'
+```
+
+Expected response (200 OK):
+```json
+{
+  "valid": true,
+  "reasons": [],
+  "llmHints": [
+    "High claim amount detected - consider additional documentation"
+  ]
+}
+```
+
+#### Score a claim for fraud risk:
+```bash
+curl -X POST http://localhost:8081/claims/score \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "John Doe",
+    "claimAmount": 50000.00,
+    "claimType": "LIFE"
+  }'
+```
+
+Expected response (200 OK):
+```json
+{
+  "fraudScore": 0.65,
+  "riskLevel": "MEDIUM",
+  "explanation": "Medium fraud risk - some unusual patterns detected that warrant additional review"
+}
+```
+
+#### Get claim summary:
+```bash
+curl http://localhost:8081/claims/123e4567-e89b-12d3-a456-426614174000/summary
+```
+
+Expected response (200 OK):
+```
+CLAIM SUMMARY
+=============
+ID: 123e4567-e89b-12d3-a456-426614174000
+Claimant: John Doe
+Amount: $1,500.00
+Type: AUTO
+Status: NEW
+Created: 2025-08-17T13:21:00
+
+VALIDATION STATUS: VALID
+AI Recommendations:
+- High claim amount detected - consider additional documentation
+
+FRAUD RISK: LOW
+Fraud Score: 0.25/1.00
+Risk Analysis: Low fraud risk - claim appears consistent with historical patterns
+```
+
+#### Get routing suggestion:
+```bash
+curl http://localhost:8081/claims/123e4567-e89b-12d3-a456-426614174000/route
+```
+
+Expected response (200 OK):
+```json
+{
+  "queue": "AUTO",
+  "reason": "Standard processing for AUTO claim with low fraud risk (score: 0.25)"
+}
+```
+
+#### Invalid claim validation:
+```bash
+curl -X POST http://localhost:8081/claims/validate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "claimantName": "",
+    "claimAmount": -100.00,
+    "claimType": "INVALID"
+  }'
+```
+
+Expected response (200 OK):
+```json
+{
+  "valid": false,
+  "reasons": [
+    "Claimant name cannot be blank",
+    "Claim amount must be greater than 0",
+    "Claim type must be one of: AUTO, HEALTH, PROPERTY, LIFE"
+  ],
+  "llmHints": []
+}
+```
+
+### Configuration
+
+AI features can be controlled via `application.yml`:
+
+```yaml
+ai:
+  validation:
+    enabled: true
+  scoring:
+    enabled: true
+  summarization:
+    enabled: true
+  routing:
+    enabled: true
+```
+
 ### Development
 
 The application uses:
@@ -227,6 +355,22 @@ The application uses:
 - **H2 Database** for development (in-memory)
 - **Spring Data JPA** for data persistence
 - **Lombok** for reducing boilerplate code
+
+### AI Features
+
+SmartClaims360 includes AI-assisted validation and fraud scoring capabilities:
+
+**Architecture:**
+- **AI Package Structure:** All AI services are organized in `com.smartclaims360.ai`
+- **Pluggable LLM Interface:** `LlmValidationProvider` allows easy integration of real LLM services
+- **Feature Flags:** Enable/disable AI features via configuration
+- **Statistical Analysis:** Fraud scoring uses z-score analysis and pattern detection
+
+**AI Services:**
+- **AiValidationService:** Rule-based validation with LLM hints
+- **FraudScoringService:** Anomaly detection using statistical analysis
+- **SummarizationService:** Generates comprehensive claim summaries
+- **RoutingService:** Suggests processing queues based on risk assessment
 
 ### CI/CD
 
