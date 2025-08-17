@@ -43,11 +43,12 @@
 - Tailwind CSS  
 
 **Backend:**  
-- Java Spring Boot **or** Python FastAPI  
+- Java Spring Boot (current implementation)
 - RESTful APIs + WebSockets for real-time updates  
 
 **Database:**  
-- PostgreSQL (primary store)  
+- H2 Database (development)
+- PostgreSQL (production)  
 - Redis (caching)  
 
 **AI / ML:**  
@@ -56,7 +57,7 @@
 
 **Infrastructure:**  
 - Docker & Kubernetes  
-- Azure DevOps / GitHub Actions CI/CD  
+- GitHub Actions CI/CD  
 - SonarQube for code quality checks  
 
 ---
@@ -69,3 +70,89 @@
        |                         |--> [AI Validation Engine]
        |                         |--> [Fraud Detection Model]
        |                         |--> [Workflow Integrations]
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Java 17** (Temurin JDK recommended)
+- **Git** for version control
+
+### Setup Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/RahulKumar8911/smartclaims360.git
+   cd smartclaims360
+   ```
+
+2. **Build the project:**
+   ```bash
+   ./gradlew build
+   ```
+
+3. **Run tests:**
+   ```bash
+   ./gradlew test
+   ```
+
+4. **Start the application:**
+   ```bash
+   ./gradlew bootRun
+   ```
+
+5. **Verify the application is running:**
+   ```bash
+   curl http://localhost:8081/health
+   ```
+   Expected response: `SmartClaims360 API is running`
+
+### Available Endpoints
+
+- **Health Check:** `GET /health` - Returns application status
+- **H2 Console:** `http://localhost:8081/h2-console` - Database management interface
+  - JDBC URL: `jdbc:h2:mem:testdb`
+  - Username: `sa`
+  - Password: `password`
+
+### Development
+
+The application uses:
+- **Spring Boot 3.1.2** with Java 17
+- **Gradle** for build management
+- **H2 Database** for development (in-memory)
+- **Spring Data JPA** for data persistence
+- **Lombok** for reducing boilerplate code
+
+### CI/CD
+
+The project includes GitHub Actions workflow that:
+- Builds the project with Java 17
+- Runs all tests
+- Caches Gradle dependencies for faster builds
+
+---
+
+## 📝 Project Structure
+
+```
+smartclaims360/
+├── src/
+│   ├── main/
+│   │   ├── java/com/smartclaims360/smartclaims360/
+│   │   │   ├── SmartClaims360Application.java
+│   │   │   └── controller/
+│   │   │       └── ClaimController.java
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/com/smartclaims360/smartclaims360/
+│           └── SmartClaims360ApplicationTests.java
+├── .github/workflows/
+│   └── ci.yml
+├── build.gradle
+├── gradlew
+└── README.md
