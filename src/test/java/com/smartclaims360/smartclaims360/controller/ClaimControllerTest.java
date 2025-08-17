@@ -3,6 +3,8 @@ package com.smartclaims360.smartclaims360.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartclaims360.smartclaims360.dto.ClaimRequest;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
+import com.smartclaims360.smartclaims360.entity.ClaimStatus;
 import com.smartclaims360.smartclaims360.service.ClaimService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +48,14 @@ class ClaimControllerTest {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("John Doe");
         claimRequest.setClaimAmount(new BigDecimal("1000.00"));
-        claimRequest.setClaimType("AUTO");
+        claimRequest.setClaimType(ClaimType.AUTO);
 
         Claim createdClaim = new Claim();
         createdClaim.setId(UUID.randomUUID());
         createdClaim.setClaimantName("John Doe");
         createdClaim.setClaimAmount(new BigDecimal("1000.00"));
-        createdClaim.setClaimType("AUTO");
-        createdClaim.setStatus("NEW");
+        createdClaim.setClaimType(ClaimType.AUTO);
+        createdClaim.setStatus(ClaimStatus.NEW);
         createdClaim.setCreatedAt(LocalDateTime.now());
 
         when(claimService.createClaim(any(ClaimRequest.class))).thenReturn(createdClaim);
@@ -73,7 +75,7 @@ class ClaimControllerTest {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("");
         claimRequest.setClaimAmount(new BigDecimal("-100.00"));
-        claimRequest.setClaimType("AUTO");
+        claimRequest.setClaimType(ClaimType.AUTO);
 
         mockMvc.perform(post("/claims")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -87,15 +89,15 @@ class ClaimControllerTest {
         claim1.setId(UUID.randomUUID());
         claim1.setClaimantName("John Doe");
         claim1.setClaimAmount(new BigDecimal("1000.00"));
-        claim1.setClaimType("AUTO");
-        claim1.setStatus("NEW");
+        claim1.setClaimType(ClaimType.AUTO);
+        claim1.setStatus(ClaimStatus.NEW);
 
         Claim claim2 = new Claim();
         claim2.setId(UUID.randomUUID());
         claim2.setClaimantName("Jane Smith");
         claim2.setClaimAmount(new BigDecimal("2000.00"));
-        claim2.setClaimType("HOME");
-        claim2.setStatus("NEW");
+        claim2.setClaimType(ClaimType.PROPERTY);
+        claim2.setStatus(ClaimStatus.NEW);
 
         when(claimService.getAllClaims()).thenReturn(Arrays.asList(claim1, claim2));
 
@@ -114,8 +116,8 @@ class ClaimControllerTest {
         claim.setId(claimId);
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("AUTO");
-        claim.setStatus("NEW");
+        claim.setClaimType(ClaimType.AUTO);
+        claim.setStatus(ClaimStatus.NEW);
 
         when(claimService.getClaimById(claimId)).thenReturn(Optional.of(claim));
 

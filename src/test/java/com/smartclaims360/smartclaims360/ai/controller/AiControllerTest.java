@@ -9,6 +9,8 @@ import com.smartclaims360.smartclaims360.ai.service.FraudScoringService;
 import com.smartclaims360.smartclaims360.ai.service.RoutingService;
 import com.smartclaims360.smartclaims360.ai.service.SummarizationService;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
+import com.smartclaims360.smartclaims360.entity.ClaimStatus;
 import com.smartclaims360.smartclaims360.service.ClaimService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,8 +131,8 @@ class AiControllerTest {
         claim.setId(UUID.randomUUID());
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("AUTO");
-        claim.setStatus("NEW");
+        claim.setClaimType(ClaimType.AUTO);
+        claim.setStatus(ClaimStatus.NEW);
         claim.setCreatedAt(LocalDateTime.now());
         return claim;
     }

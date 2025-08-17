@@ -3,6 +3,7 @@ package com.smartclaims360.smartclaims360.ai.service;
 import com.smartclaims360.smartclaims360.ai.dto.ValidationResponse;
 import com.smartclaims360.smartclaims360.ai.provider.LlmValidationProvider;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +38,7 @@ class AiValidationServiceTest {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("AUTO");
+        claim.setClaimType(ClaimType.AUTO);
 
         List<String> mockHints = Arrays.asList("Consider additional documentation");
         when(llmValidationProvider.isEnabled()).thenReturn(true);
@@ -55,7 +56,7 @@ class AiValidationServiceTest {
         Claim claim = new Claim();
         claim.setClaimantName("");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("AUTO");
+        claim.setClaimType(ClaimType.AUTO);
 
         when(llmValidationProvider.isEnabled()).thenReturn(true);
         when(llmValidationProvider.getValidationHints(claim)).thenReturn(Arrays.asList());
@@ -71,7 +72,7 @@ class AiValidationServiceTest {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("-100.00"));
-        claim.setClaimType("AUTO");
+        claim.setClaimType(ClaimType.AUTO);
 
         when(llmValidationProvider.isEnabled()).thenReturn(true);
         when(llmValidationProvider.getValidationHints(claim)).thenReturn(Arrays.asList());
@@ -87,7 +88,7 @@ class AiValidationServiceTest {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("INVALID");
+        claim.setClaimType(null);
 
         when(llmValidationProvider.isEnabled()).thenReturn(true);
         when(llmValidationProvider.getValidationHints(claim)).thenReturn(Arrays.asList());
@@ -95,7 +96,7 @@ class AiValidationServiceTest {
         ValidationResponse response = aiValidationService.validateClaim(claim);
 
         assertFalse(response.isValid());
-        assertTrue(response.getReasons().contains("Claim type must be one of: AUTO, HEALTH, PROPERTY, LIFE"));
+        assertTrue(response.getReasons().contains("Claim type must be one of: [AUTO, HEALTH, PROPERTY, LIFE]"));
     }
 
     @Test
@@ -105,7 +106,7 @@ class AiValidationServiceTest {
         Claim claim = new Claim();
         claim.setClaimantName("");
         claim.setClaimAmount(new BigDecimal("-100.00"));
-        claim.setClaimType("INVALID");
+        claim.setClaimType(null);
 
         ValidationResponse response = aiValidationService.validateClaim(claim);
 

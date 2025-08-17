@@ -3,6 +3,8 @@ package com.smartclaims360.smartclaims360.ai.service;
 import com.smartclaims360.smartclaims360.ai.dto.FraudScoreResponse;
 import com.smartclaims360.smartclaims360.ai.dto.ValidationResponse;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
+import com.smartclaims360.smartclaims360.entity.ClaimStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,8 +95,8 @@ class SummarizationServiceTest {
         claim.setId(UUID.randomUUID());
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("AUTO");
-        claim.setStatus("NEW");
+        claim.setClaimType(ClaimType.AUTO);
+        claim.setStatus(ClaimStatus.NEW);
         claim.setCreatedAt(LocalDateTime.now());
         return claim;
     }

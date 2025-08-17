@@ -4,6 +4,8 @@ import com.smartclaims360.smartclaims360.ai.dto.FraudScoreResponse;
 import com.smartclaims360.smartclaims360.ai.dto.RoutingSuggestion;
 import com.smartclaims360.smartclaims360.ai.dto.ValidationResponse;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimStatus;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +41,7 @@ class RoutingServiceTest {
 
     @Test
     void testSuggestValidLowRiskClaim() {
-        Claim claim = createTestClaim("AUTO");
+        Claim claim = createTestClaim(ClaimType.AUTO);
         
         ValidationResponse validationResponse = new ValidationResponse(true, Arrays.asList(), Arrays.asList());
         FraudScoreResponse fraudResponse = new FraudScoreResponse(new BigDecimal("0.25"), "LOW", "Low fraud risk");
@@ -56,7 +58,7 @@ class RoutingServiceTest {
 
     @Test
     void testSuggestValidMediumRiskClaim() {
-        Claim claim = createTestClaim("HEALTH");
+        Claim claim = createTestClaim(ClaimType.HEALTH);
         
         ValidationResponse validationResponse = new ValidationResponse(true, Arrays.asList(), Arrays.asList());
         FraudScoreResponse fraudResponse = new FraudScoreResponse(new BigDecimal("0.50"), "MEDIUM", "Medium fraud risk");
@@ -72,7 +74,7 @@ class RoutingServiceTest {
 
     @Test
     void testSuggestHighRiskClaim() {
-        Claim claim = createTestClaim("AUTO");
+        Claim claim = createTestClaim(ClaimType.AUTO);
         
         ValidationResponse validationResponse = new ValidationResponse(true, Arrays.asList(), Arrays.asList());
         FraudScoreResponse fraudResponse = new FraudScoreResponse(new BigDecimal("0.80"), "HIGH", "High fraud risk");
@@ -88,7 +90,7 @@ class RoutingServiceTest {
 
     @Test
     void testSuggestInvalidClaim() {
-        Claim claim = createTestClaim("AUTO");
+        Claim claim = createTestClaim(ClaimType.AUTO);
         
         ValidationResponse validationResponse = new ValidationResponse(false, Arrays.asList("Invalid claim type"), Arrays.asList());
         FraudScoreResponse fraudResponse = new FraudScoreResponse(new BigDecimal("0.25"), "LOW", "Low fraud risk");
@@ -106,7 +108,7 @@ class RoutingServiceTest {
     void testRoutingDisabled() {
         ReflectionTestUtils.setField(routingService, "routingEnabled", false);
 
-        Claim claim = createTestClaim("AUTO");
+        Claim claim = createTestClaim(ClaimType.AUTO);
 
         RoutingSuggestion suggestion = routingService.suggest(claim);
 
@@ -114,13 +116,13 @@ class RoutingServiceTest {
         assertEquals("Routing service is disabled", suggestion.getReason());
     }
 
-    private Claim createTestClaim(String claimType) {
+    private Claim createTestClaim(ClaimType claimType) {
         Claim claim = new Claim();
         claim.setId(UUID.randomUUID());
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(claimType);
-        claim.setStatus("NEW");
+        claim.setStatus(ClaimStatus.NEW);
         claim.setCreatedAt(LocalDateTime.now());
         return claim;
     }

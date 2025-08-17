@@ -40,7 +40,7 @@ public class RoutingService {
                 "High fraud risk detected (score: " + fraudScore.getFraudScore() + ")");
         }
 
-        String claimType = claim.getClaimType().toUpperCase();
+        String claimType = claim.getClaimType().name();
         String reason = "Standard processing for " + claimType + " claim";
         
         if (fraudScore.getFraudScore().compareTo(new BigDecimal("0.40")) >= 0) {

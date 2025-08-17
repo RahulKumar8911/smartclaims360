@@ -2,6 +2,7 @@ package com.smartclaims360.smartclaims360.ai.service;
 
 import com.smartclaims360.smartclaims360.ai.dto.FraudScoreResponse;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
 import com.smartclaims360.smartclaims360.repository.ClaimRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
 
 @Service
 public class FraudScoringService {
@@ -80,7 +82,7 @@ public class FraudScoringService {
     }
 
     private double calculateClaimTypeFrequencyScore(Claim claim, List<Claim> historicalClaims) {
-        Map<String, Long> typeFrequency = historicalClaims.stream()
+        Map<ClaimType, Long> typeFrequency = historicalClaims.stream()
                 .collect(Collectors.groupingBy(Claim::getClaimType, Collectors.counting()));
 
         long totalClaims = historicalClaims.size();

@@ -3,6 +3,9 @@ package com.smartclaims360.smartclaims360.ai.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartclaims360.smartclaims360.dto.ClaimRequest;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimStatus;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
 import com.smartclaims360.smartclaims360.repository.ClaimRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +46,7 @@ class AiIntegrationTest {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("AUTO");
+        claim.setClaimType(ClaimType.AUTO);
 
         mockMvc.perform(post("/claims/validate")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,7 +62,7 @@ class AiIntegrationTest {
         Claim claim = new Claim();
         claim.setClaimantName("");
         claim.setClaimAmount(new BigDecimal("-100.00"));
-        claim.setClaimType("INVALID");
+        claim.setClaimType(null);
 
         mockMvc.perform(post("/claims/validate")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +78,7 @@ class AiIntegrationTest {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
         claim.setClaimAmount(new BigDecimal("1000.00"));
-        claim.setClaimType("AUTO");
+        claim.setClaimType(ClaimType.AUTO);
 
         mockMvc.perform(post("/claims/score")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +94,7 @@ class AiIntegrationTest {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("Integration Test User");
         claimRequest.setClaimAmount(new BigDecimal("5000.00"));
-        claimRequest.setClaimType("HEALTH");
+        claimRequest.setClaimType(ClaimType.HEALTH);
 
         String response = mockMvc.perform(post("/claims")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +119,7 @@ class AiIntegrationTest {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("Routing Test User");
         claimRequest.setClaimAmount(new BigDecimal("2000.00"));
-        claimRequest.setClaimType("PROPERTY");
+        claimRequest.setClaimType(ClaimType.PROPERTY);
 
         String response = mockMvc.perform(post("/claims")
                         .contentType(MediaType.APPLICATION_JSON)

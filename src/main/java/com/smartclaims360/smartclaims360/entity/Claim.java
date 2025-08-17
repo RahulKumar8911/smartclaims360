@@ -39,14 +39,16 @@ public class Claim {
     @Schema(description = "Monetary amount being claimed in USD", example = "1500.00", required = true)
     private BigDecimal claimAmount;
 
-    @NotBlank(message = "Claim type cannot be blank")
+    @NotNull(message = "Claim type cannot be null")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Schema(description = "Type of insurance claim", example = "AUTO", allowableValues = {"AUTO", "HEALTH", "PROPERTY", "LIFE"}, required = true)
-    private String claimType;
+    @Schema(description = "Type of insurance claim", example = "AUTO", required = true)
+    private ClaimType claimType;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Schema(description = "Current processing status of the claim", example = "NEW", allowableValues = {"NEW", "PROCESSING", "APPROVED", "REJECTED"})
-    private String status = "NEW";
+    @Schema(description = "Current processing status of the claim", example = "NEW")
+    private ClaimStatus status = ClaimStatus.NEW;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

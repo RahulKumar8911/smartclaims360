@@ -2,6 +2,8 @@ package com.smartclaims360.smartclaims360.ai.service;
 
 import com.smartclaims360.smartclaims360.ai.dto.FraudScoreResponse;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimStatus;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
 import com.smartclaims360.smartclaims360.repository.ClaimRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +39,7 @@ class FraudScoringServiceTest {
 
     @Test
     void testScoreClaimWithNoHistoricalData() {
-        Claim claim = createTestClaim("John Doe", new BigDecimal("1000.00"), "AUTO");
+        Claim claim = createTestClaim("John Doe", new BigDecimal("1000.00"), ClaimType.AUTO);
         when(claimRepository.findAll()).thenReturn(Arrays.asList());
 
         FraudScoreResponse response = fraudScoringService.scoreClaim(claim);
@@ -48,12 +50,12 @@ class FraudScoringServiceTest {
 
     @Test
     void testScoreClaimWithHistoricalData() {
-        Claim newClaim = createTestClaim("John Doe", new BigDecimal("1000.00"), "AUTO");
+        Claim newClaim = createTestClaim("John Doe", new BigDecimal("1000.00"), ClaimType.AUTO);
         
         List<Claim> historicalClaims = Arrays.asList(
-            createTestClaim("Jane Smith", new BigDecimal("500.00"), "AUTO"),
-            createTestClaim("Bob Johnson", new BigDecimal("750.00"), "HEALTH"),
-            createTestClaim("Alice Brown", new BigDecimal("600.00"), "AUTO")
+            createTestClaim("Jane Smith", new BigDecimal("500.00"), ClaimType.AUTO),
+            createTestClaim("Bob Johnson", new BigDecimal("750.00"), ClaimType.HEALTH),
+            createTestClaim("Alice Brown", new BigDecimal("600.00"), ClaimType.AUTO)
         );
         
         when(claimRepository.findAll()).thenReturn(historicalClaims);
@@ -69,12 +71,12 @@ class FraudScoringServiceTest {
 
     @Test
     void testScoreClaimHighAmount() {
-        Claim newClaim = createTestClaim("John Doe", new BigDecimal("50000.00"), "AUTO");
+        Claim newClaim = createTestClaim("John Doe", new BigDecimal("50000.00"), ClaimType.AUTO);
         
         List<Claim> historicalClaims = Arrays.asList(
-            createTestClaim("Jane Smith", new BigDecimal("500.00"), "AUTO"),
-            createTestClaim("Bob Johnson", new BigDecimal("750.00"), "AUTO"),
-            createTestClaim("Alice Brown", new BigDecimal("600.00"), "AUTO")
+            createTestClaim("Jane Smith", new BigDecimal("500.00"), ClaimType.AUTO),
+            createTestClaim("Bob Johnson", new BigDecimal("750.00"), ClaimType.AUTO),
+            createTestClaim("Alice Brown", new BigDecimal("600.00"), ClaimType.AUTO)
         );
         
         when(claimRepository.findAll()).thenReturn(historicalClaims);
@@ -86,12 +88,12 @@ class FraudScoringServiceTest {
 
     @Test
     void testScoreClaimRepeatedName() {
-        Claim newClaim = createTestClaim("John Doe", new BigDecimal("1000.00"), "AUTO");
+        Claim newClaim = createTestClaim("John Doe", new BigDecimal("1000.00"), ClaimType.AUTO);
         
         List<Claim> historicalClaims = Arrays.asList(
-            createTestClaim("John Doe", new BigDecimal("500.00"), "AUTO"),
-            createTestClaim("John Doe", new BigDecimal("750.00"), "HEALTH"),
-            createTestClaim("Alice Brown", new BigDecimal("600.00"), "AUTO")
+            createTestClaim("John Doe", new BigDecimal("500.00"), ClaimType.AUTO),
+            createTestClaim("John Doe", new BigDecimal("750.00"), ClaimType.HEALTH),
+            createTestClaim("Alice Brown", new BigDecimal("600.00"), ClaimType.AUTO)
         );
         
         when(claimRepository.findAll()).thenReturn(historicalClaims);
@@ -105,7 +107,7 @@ class FraudScoringServiceTest {
     void testScoringDisabled() {
         ReflectionTestUtils.setField(fraudScoringService, "scoringEnabled", false);
 
-        Claim claim = createTestClaim("John Doe", new BigDecimal("1000.00"), "AUTO");
+        Claim claim = createTestClaim("John Doe", new BigDecimal("1000.00"), ClaimType.AUTO);
 
         FraudScoreResponse response = fraudScoringService.scoreClaim(claim);
 
@@ -116,20 +118,20 @@ class FraudScoringServiceTest {
 
     @Test
     void testRiskLevelClassification() {
-        Claim claim = createTestClaim("John Doe", new BigDecimal("1000.00"), "AUTO");
+        Claim claim = createTestClaim("John Doe", new BigDecimal("1000.00"), ClaimType.AUTO);
         when(claimRepository.findAll()).thenReturn(Arrays.asList());
 
         FraudScoreResponse response = fraudScoringService.scoreClaim(claim);
         assertEquals("LOW", response.getRiskLevel());
     }
 
-    private Claim createTestClaim(String name, BigDecimal amount, String type) {
+    private Claim createTestClaim(String name, BigDecimal amount, ClaimType type) {
         Claim claim = new Claim();
         claim.setId(UUID.randomUUID());
         claim.setClaimantName(name);
         claim.setClaimAmount(amount);
         claim.setClaimType(type);
-        claim.setStatus("NEW");
+        claim.setStatus(ClaimStatus.NEW);
         claim.setCreatedAt(LocalDateTime.now());
         return claim;
     }

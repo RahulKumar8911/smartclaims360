@@ -3,6 +3,9 @@ package com.smartclaims360.smartclaims360.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartclaims360.smartclaims360.dto.ClaimRequest;
 import com.smartclaims360.smartclaims360.entity.Claim;
+import com.smartclaims360.smartclaims360.entity.ClaimStatus;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
+import com.smartclaims360.smartclaims360.entity.ClaimType;
 import com.smartclaims360.smartclaims360.repository.ClaimRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +46,7 @@ class ClaimIntegrationTest {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("Integration Test User");
         claimRequest.setClaimAmount(new BigDecimal("5000.00"));
-        claimRequest.setClaimType("HEALTH");
+        claimRequest.setClaimType(ClaimType.HEALTH);
 
         String response = mockMvc.perform(post("/claims")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +80,7 @@ class ClaimIntegrationTest {
         ClaimRequest invalidRequest = new ClaimRequest();
         invalidRequest.setClaimantName("");
         invalidRequest.setClaimAmount(new BigDecimal("-100"));
-        invalidRequest.setClaimType("");
+        invalidRequest.setClaimType(null);
 
         mockMvc.perform(post("/claims")
                         .contentType(MediaType.APPLICATION_JSON)
