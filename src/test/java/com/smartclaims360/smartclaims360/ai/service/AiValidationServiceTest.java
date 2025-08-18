@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,6 +38,9 @@ class AiValidationServiceTest {
     void testValidateValidClaim() {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(ClaimType.AUTO);
 
@@ -55,6 +59,9 @@ class AiValidationServiceTest {
     void testValidateInvalidClaimBlankName() {
         Claim claim = new Claim();
         claim.setClaimantName("");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(ClaimType.AUTO);
 
@@ -71,6 +78,9 @@ class AiValidationServiceTest {
     void testValidateInvalidClaimNegativeAmount() {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("-100.00"));
         claim.setClaimType(ClaimType.AUTO);
 
@@ -87,6 +97,9 @@ class AiValidationServiceTest {
     void testValidateInvalidClaimType() {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(null);
 
@@ -105,6 +118,9 @@ class AiValidationServiceTest {
 
         Claim claim = new Claim();
         claim.setClaimantName("");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("-100.00"));
         claim.setClaimType(null);
 

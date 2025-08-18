@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,6 +46,9 @@ class AiIntegrationTest {
     void testValidateClaimEndpoint() throws Exception {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(ClaimType.AUTO);
 
@@ -61,6 +65,9 @@ class AiIntegrationTest {
     void testValidateInvalidClaim() throws Exception {
         Claim claim = new Claim();
         claim.setClaimantName("");
+        claim.setFirstName("");
+        claim.setLastName("");
+        claim.setDateOfBirth(null);
         claim.setClaimAmount(new BigDecimal("-100.00"));
         claim.setClaimType(null);
 
@@ -77,6 +84,9 @@ class AiIntegrationTest {
     void testScoreClaimEndpoint() throws Exception {
         Claim claim = new Claim();
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(ClaimType.AUTO);
 
@@ -93,6 +103,9 @@ class AiIntegrationTest {
     void testClaimSummaryEndpoint() throws Exception {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("Integration Test User");
+        claimRequest.setFirstName("John");
+        claimRequest.setLastName("Doe");
+        claimRequest.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claimRequest.setClaimAmount(new BigDecimal("5000.00"));
         claimRequest.setClaimType(ClaimType.HEALTH);
 
@@ -118,6 +131,9 @@ class AiIntegrationTest {
     void testRoutingSuggestionEndpoint() throws Exception {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("Routing Test User");
+        claimRequest.setFirstName("John");
+        claimRequest.setLastName("Doe");
+        claimRequest.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claimRequest.setClaimAmount(new BigDecimal("2000.00"));
         claimRequest.setClaimType(ClaimType.PROPERTY);
 

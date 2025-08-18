@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,6 +101,9 @@ class ClaimRepositoryTest {
     private Claim createTestClaim(String claimantName, ClaimType claimType, ClaimStatus status) {
         Claim claim = new Claim();
         claim.setClaimantName(claimantName);
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(claimType);
         claim.setStatus(status);

@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
@@ -130,6 +131,9 @@ class AiControllerTest {
         Claim claim = new Claim();
         claim.setId(UUID.randomUUID());
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(ClaimType.AUTO);
         claim.setStatus(ClaimStatus.NEW);

@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
@@ -120,6 +121,9 @@ class RoutingServiceTest {
         Claim claim = new Claim();
         claim.setId(UUID.randomUUID());
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(claimType);
         claim.setStatus(ClaimStatus.NEW);

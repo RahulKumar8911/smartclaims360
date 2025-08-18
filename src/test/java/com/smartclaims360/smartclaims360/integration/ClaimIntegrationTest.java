@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,6 +46,9 @@ class ClaimIntegrationTest {
     void testCreateAndRetrieveClaim() throws Exception {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("Integration Test User");
+        claimRequest.setFirstName("John");
+        claimRequest.setLastName("Doe");
+        claimRequest.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claimRequest.setClaimAmount(new BigDecimal("5000.00"));
         claimRequest.setClaimType(ClaimType.HEALTH);
 
@@ -79,6 +83,9 @@ class ClaimIntegrationTest {
     void testValidationErrors() throws Exception {
         ClaimRequest invalidRequest = new ClaimRequest();
         invalidRequest.setClaimantName("");
+        invalidRequest.setFirstName("");
+        invalidRequest.setLastName("");
+        invalidRequest.setDateOfBirth(LocalDate.of(2030, 1, 1));
         invalidRequest.setClaimAmount(new BigDecimal("-100"));
         invalidRequest.setClaimType(null);
 

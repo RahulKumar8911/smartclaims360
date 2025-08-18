@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -129,6 +130,10 @@ class FraudScoringServiceTest {
         Claim claim = new Claim();
         claim.setId(UUID.randomUUID());
         claim.setClaimantName(name);
+        String[] nameParts = name.split(" ");
+        claim.setFirstName(nameParts.length > 0 ? nameParts[0] : "John");
+        claim.setLastName(nameParts.length > 1 ? nameParts[1] : "Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(amount);
         claim.setClaimType(type);
         claim.setStatus(ClaimStatus.NEW);
