@@ -22,6 +22,9 @@ public class ClaimService {
     public Claim createClaim(ClaimRequest claimRequest) {
         Claim claim = new Claim();
         claim.setClaimantName(claimRequest.getClaimantName());
+        claim.setFirstName(claimRequest.getFirstName());
+        claim.setLastName(claimRequest.getLastName());
+        claim.setDateOfBirth(claimRequest.getDateOfBirth());
         claim.setClaimAmount(claimRequest.getClaimAmount());
         claim.setClaimType(claimRequest.getClaimType());
         claim.setStatus(ClaimStatus.NEW);
@@ -42,6 +45,9 @@ public class ClaimService {
         if (existingClaim.isPresent()) {
             Claim claim = existingClaim.get();
             claim.setClaimantName(updateRequest.getClaimantName());
+            claim.setFirstName(updateRequest.getFirstName());
+            claim.setLastName(updateRequest.getLastName());
+            claim.setDateOfBirth(updateRequest.getDateOfBirth());
             claim.setClaimAmount(updateRequest.getClaimAmount());
             claim.setClaimType(updateRequest.getClaimType());
             if (updateRequest.getStatus() != null) {

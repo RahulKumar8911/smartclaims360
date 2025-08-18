@@ -6,6 +6,7 @@ import com.smartclaims360.smartclaims360.entity.Claim;
 import com.smartclaims360.smartclaims360.entity.ClaimType;
 import com.smartclaims360.smartclaims360.entity.ClaimStatus;
 import com.smartclaims360.smartclaims360.service.ClaimService;
+import com.smartclaims360.smartclaims360.service.DuplicateDetectionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
@@ -33,6 +35,9 @@ class ClaimControllerTest {
     @MockBean
     private ClaimService claimService;
 
+    @MockBean
+    private DuplicateDetectionService duplicateDetectionService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -47,12 +52,18 @@ class ClaimControllerTest {
     void testCreateClaim() throws Exception {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("John Doe");
+        claimRequest.setFirstName("John");
+        claimRequest.setLastName("Doe");
+        claimRequest.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claimRequest.setClaimAmount(new BigDecimal("1000.00"));
         claimRequest.setClaimType(ClaimType.AUTO);
 
         Claim createdClaim = new Claim();
         createdClaim.setId(UUID.randomUUID());
         createdClaim.setClaimantName("John Doe");
+        createdClaim.setFirstName("John");
+        createdClaim.setLastName("Doe");
+        createdClaim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         createdClaim.setClaimAmount(new BigDecimal("1000.00"));
         createdClaim.setClaimType(ClaimType.AUTO);
         createdClaim.setStatus(ClaimStatus.NEW);
@@ -74,6 +85,9 @@ class ClaimControllerTest {
     void testCreateClaimWithInvalidData() throws Exception {
         ClaimRequest claimRequest = new ClaimRequest();
         claimRequest.setClaimantName("");
+        claimRequest.setFirstName("");
+        claimRequest.setLastName("");
+        claimRequest.setDateOfBirth(LocalDate.of(2030, 1, 1));
         claimRequest.setClaimAmount(new BigDecimal("-100.00"));
         claimRequest.setClaimType(ClaimType.AUTO);
 
@@ -88,6 +102,9 @@ class ClaimControllerTest {
         Claim claim1 = new Claim();
         claim1.setId(UUID.randomUUID());
         claim1.setClaimantName("John Doe");
+        claim1.setFirstName("John");
+        claim1.setLastName("Doe");
+        claim1.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim1.setClaimAmount(new BigDecimal("1000.00"));
         claim1.setClaimType(ClaimType.AUTO);
         claim1.setStatus(ClaimStatus.NEW);
@@ -95,6 +112,9 @@ class ClaimControllerTest {
         Claim claim2 = new Claim();
         claim2.setId(UUID.randomUUID());
         claim2.setClaimantName("Jane Smith");
+        claim2.setFirstName("Jane");
+        claim2.setLastName("Smith");
+        claim2.setDateOfBirth(LocalDate.of(1990, 7, 22));
         claim2.setClaimAmount(new BigDecimal("2000.00"));
         claim2.setClaimType(ClaimType.PROPERTY);
         claim2.setStatus(ClaimStatus.NEW);
@@ -115,6 +135,9 @@ class ClaimControllerTest {
         Claim claim = new Claim();
         claim.setId(claimId);
         claim.setClaimantName("John Doe");
+        claim.setFirstName("John");
+        claim.setLastName("Doe");
+        claim.setDateOfBirth(LocalDate.of(1985, 3, 15));
         claim.setClaimAmount(new BigDecimal("1000.00"));
         claim.setClaimType(ClaimType.AUTO);
         claim.setStatus(ClaimStatus.NEW);

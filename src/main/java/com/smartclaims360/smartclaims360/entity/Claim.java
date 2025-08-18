@@ -5,12 +5,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -32,6 +34,22 @@ public class Claim {
     @Column(nullable = false)
     @Schema(description = "Full name of the person filing the claim", example = "John Doe", required = true)
     private String claimantName;
+
+    @NotBlank(message = "First name cannot be blank")
+    @Column(nullable = false)
+    @Schema(description = "First name of the claimant", example = "John", required = true)
+    private String firstName;
+
+    @NotBlank(message = "Last name cannot be blank")
+    @Column(nullable = false)
+    @Schema(description = "Last name of the claimant", example = "Doe", required = true)
+    private String lastName;
+
+    @NotNull(message = "Date of birth cannot be null")
+    @Past(message = "Date of birth must be in the past")
+    @Column(nullable = false)
+    @Schema(description = "Date of birth of the claimant", example = "1985-03-15", required = true)
+    private LocalDate dateOfBirth;
 
     @NotNull(message = "Claim amount cannot be null")
     @DecimalMin(value = "0.01", message = "Claim amount must be greater than 0")

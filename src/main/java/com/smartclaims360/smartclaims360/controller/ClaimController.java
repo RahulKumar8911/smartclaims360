@@ -2,11 +2,13 @@ package com.smartclaims360.smartclaims360.controller;
 
 import com.smartclaims360.smartclaims360.dto.ClaimRequest;
 import com.smartclaims360.smartclaims360.dto.ClaimUpdateRequest;
+import com.smartclaims360.smartclaims360.dto.DuplicateDetectionResponse;
 import com.smartclaims360.smartclaims360.entity.Claim;
 import com.smartclaims360.smartclaims360.entity.ClaimStatus;
 import com.smartclaims360.smartclaims360.entity.ClaimType;
 import com.smartclaims360.smartclaims360.exception.ClaimNotFoundException;
 import com.smartclaims360.smartclaims360.service.ClaimService;
+import com.smartclaims360.smartclaims360.service.DuplicateDetectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -31,6 +33,9 @@ public class ClaimController {
 
     @Autowired
     private ClaimService claimService;
+
+    @Autowired
+    private DuplicateDetectionService duplicateDetectionService;
 
     @GetMapping("/health")
     @Operation(
@@ -67,6 +72,9 @@ public class ClaimController {
                     {
                         "id": "123e4567-e89b-12d3-a456-426614174000",
                         "claimantName": "John Doe",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "dateOfBirth": "1985-03-15",
                         "claimAmount": 1500.00,
                         "claimType": "AUTO",
                         "status": "NEW",
@@ -102,6 +110,9 @@ public class ClaimController {
                 examples = @ExampleObject(value = """
                     {
                         "claimantName": "John Doe",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "dateOfBirth": "1985-03-15",
                         "claimAmount": 1500.00,
                         "claimType": "AUTO"
                     }
@@ -130,6 +141,9 @@ public class ClaimController {
                         {
                             "id": "123e4567-e89b-12d3-a456-426614174000",
                             "claimantName": "John Doe",
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "dateOfBirth": "1985-03-15",
                             "claimAmount": 1500.00,
                             "claimType": "AUTO",
                             "status": "NEW",
@@ -139,6 +153,9 @@ public class ClaimController {
                         {
                             "id": "987fcdeb-51a2-43d1-9c4f-123456789abc",
                             "claimantName": "Jane Smith",
+                            "firstName": "Jane",
+                            "lastName": "Smith",
+                            "dateOfBirth": "1990-07-22",
                             "claimAmount": 5000.00,
                             "claimType": "HEALTH",
                             "status": "REVIEW",
@@ -171,6 +188,9 @@ public class ClaimController {
                     {
                         "id": "123e4567-e89b-12d3-a456-426614174000",
                         "claimantName": "John Doe",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "dateOfBirth": "1985-03-15",
                         "claimAmount": 1500.00,
                         "claimType": "AUTO",
                         "status": "NEW",
@@ -221,6 +241,9 @@ public class ClaimController {
                         {
                             "id": "123e4567-e89b-12d3-a456-426614174000",
                             "claimantName": "John Doe Updated",
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "dateOfBirth": "1985-03-15",
                             "claimAmount": 2500.00,
                             "claimType": "PROPERTY",
                             "status": "REVIEW",
@@ -315,6 +338,62 @@ public class ClaimController {
             @RequestParam(required = false) ClaimType type) {
         List<Claim> claims = claimService.searchClaims(status, type);
         return ResponseEntity.ok(claims);
+    }
+
+    @GetMapping("/claims/duplicates")
+    @Operation(
+        summary = "Find Duplicate Claims",
+        description = "Identifies duplicate claims based on matching first name, last name, and date of birth"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate claims retrieved successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = DuplicateDetectionResponse.class),
+                examples = @ExampleObject(value = """
+                    [
+                        {
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "dateOfBirth": "1985-03-15",
+                            "duplicateCount": 2,
+                            "duplicateClaims": [
+                                {
+                                    "id": "123e4567-e89b-12d3-a456-426614174000",
+                                    "claimantName": "John Doe",
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "dateOfBirth": "1985-03-15",
+                                    "claimAmount": 1500.00,
+                                    "claimType": "AUTO",
+                                    "status": "NEW",
+                                    "createdAt": "2025-08-17T14:30:00",
+                                    "fraudScore": 0.25
+                                },
+                                {
+                                    "id": "456e7890-e89b-12d3-a456-426614174002",
+                                    "claimantName": "John Doe",
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "dateOfBirth": "1985-03-15",
+                                    "claimAmount": 2500.00,
+                                    "claimType": "HEALTH",
+                                    "status": "REVIEW",
+                                    "createdAt": "2025-08-17T15:45:00",
+                                    "fraudScore": 0.45
+                                }
+                            ]
+                        }
+                    ]
+                    """)
+            )
+        )
+    })
+    public ResponseEntity<List<DuplicateDetectionResponse>> findDuplicateClaims() {
+        List<DuplicateDetectionResponse> duplicates = duplicateDetectionService.findAllDuplicates();
+        return ResponseEntity.ok(duplicates);
     }
 
     @ExceptionHandler(ClaimNotFoundException.class)
