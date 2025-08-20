@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
+// dto classes comment
+// Trail commit
 
 @Data
 @Schema(description = "Request payload for creating a new insurance claim")
